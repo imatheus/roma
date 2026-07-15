@@ -66,7 +66,7 @@ export default function Home() {
   return (
     <div className="container">
       <div className="header-logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/TOTVS_logo.svg" alt="TOTVS" />
+        <img src="https://static.fluigidentity.com/cloudpass/assets/image/company/small/zf0y84vo717g8hjx.png" alt="Logo" />
       </div>
       <h1>Portal de Compras (MILLEN-80053) — Parte 1</h1>
       <p className="subtitle">Dúvidas de Produto e Regras de Negócio da Parte 1 (Auto-save Ativado)</p>
