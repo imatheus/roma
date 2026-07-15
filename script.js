@@ -248,39 +248,39 @@ function mudarPagina(page) {
 }
 
 function carregarRespostas() {
-  fetch('/api/respostas')
-    .then(res => res.json())
-    .then(respostas => {
-      const respMap = {};
-      respostas.forEach(r => respMap[r.question_id] = r.resposta);
+  let respostas = {};
+  try {
+    const data = localStorage.getItem('respostas_portal');
+    if (data) respostas = JSON.parse(data);
+  } catch(e) {
+    console.error(e);
+  }
 
-      questionsData.forEach(q => {
-        const textarea = document.getElementById(`input-${q.id}`);
-        if (textarea) {
-          // Preenche com o valor atual do banco
-          textarea.value = respMap[q.id] || "";
-          const safeTitle = q.title.replace(/'/g, "\\'");
-          
-          // Inicializa o EasyMDE sobre o textarea para renderizar as respostas (como **negrito**)
-          if (window.EasyMDE) {
-            const mde = new EasyMDE({ 
-               element: textarea,
-               spellChecker: false,
-               status: false,
-               minHeight: "100px",
-               toolbar: ["bold", "italic", "heading", "|", "quote", "unordered-list", "ordered-list", "|", "preview"]
-            });
-            mde.codemirror.on("blur", () => {
-               salvarResposta(q.id, safeTitle, mde.value());
-            });
-          } else {
-             // Fallback caso o CDN não carregue
-             textarea.addEventListener('blur', () => salvarResposta(q.id, safeTitle, textarea.value));
-          }
-        }
-      });
-    })
-    .catch(console.error);
+  questionsData.forEach(q => {
+    const textarea = document.getElementById(`input-${q.id}`);
+    if (textarea) {
+      // Preenche com o valor atual salvo
+      textarea.value = respostas[q.id] || "";
+      const safeTitle = q.title.replace(/'/g, "\\'");
+      
+      // Inicializa o EasyMDE sobre o textarea para renderizar as respostas (como **negrito**)
+      if (window.EasyMDE) {
+        const mde = new EasyMDE({ 
+            element: textarea,
+            spellChecker: false,
+            status: false,
+            minHeight: "100px",
+            toolbar: ["bold", "italic", "heading", "|", "quote", "unordered-list", "ordered-list", "|", "preview"]
+        });
+        mde.codemirror.on("blur", () => {
+            salvarResposta(q.id, safeTitle, mde.value());
+        });
+      } else {
+          // Fallback caso o CDN não carregue
+          textarea.addEventListener('blur', () => salvarResposta(q.id, safeTitle, textarea.value));
+      }
+    }
+  });
 }
 
 function salvarResposta(id, title, resposta) {
@@ -289,25 +289,24 @@ function salvarResposta(id, title, resposta) {
   statusDiv.textContent = 'Salvando...';
   statusDiv.style.color = '#e67e22';
 
-  fetch('/api/save', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, title, resposta })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      statusDiv.textContent = '✓ Salvo automaticamente';
-      statusDiv.style.color = '#27ae60';
-      
-      if (timeoutMap[id]) clearTimeout(timeoutMap[id]);
-      timeoutMap[id] = setTimeout(() => {
-        statusDiv.textContent = '';
-      }, 3000);
-    }
-  })
-  .catch(err => {
+  try {
+    let respostas = {};
+    const data = localStorage.getItem('respostas_portal');
+    if (data) respostas = JSON.parse(data);
+    
+    respostas[id] = resposta;
+    localStorage.setItem('respostas_portal', JSON.stringify(respostas));
+    
+    statusDiv.textContent = '✓ Salvo localmente';
+    statusDiv.style.color = '#27ae60';
+    
+    if (timeoutMap[id]) clearTimeout(timeoutMap[id]);
+    timeoutMap[id] = setTimeout(() => {
+      statusDiv.textContent = '';
+    }, 3000);
+  } catch(err) {
+    console.error(err);
     statusDiv.textContent = '✗ Erro ao salvar';
     statusDiv.style.color = '#c0392b';
-  });
+  }
 }
