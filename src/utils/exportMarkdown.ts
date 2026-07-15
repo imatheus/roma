@@ -22,4 +22,11 @@ export function exportarMarkdown(questionsData: Question[], respMap: Record<stri
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+
+  setTimeout(() => {
+    const subject = encodeURIComponent('Respostas do Portal de Compras (MILLEN-80053)');
+    const bodyText = 'Olá,\n\nPor favor, encontre em anexo o arquivo Markdown com as respostas da definição de regras do portal de compras.\n\nObrigado!';
+    const body = encodeURIComponent(bodyText);
+    window.location.href = `mailto:pedidos.millennium@linx.com.br?subject=${subject}&body=${body}`;
+  }, 500);
 }

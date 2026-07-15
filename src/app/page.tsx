@@ -4,6 +4,7 @@ import QuestionCard from '@/components/QuestionCard';
 import { markdownText } from '@/utils/constants';
 import { parseMarkdownToQuestions } from '@/utils/markdownParser';
 import { exportarMarkdown } from '@/utils/exportMarkdown';
+import { defaultAnswers } from '@/utils/defaultAnswers';
 
 export default function Home() {
   const [respostas, setRespostas] = useState<Record<string, string>>({});
@@ -19,9 +20,12 @@ export default function Home() {
       const data = localStorage.getItem('respostas_portal');
       if (data) {
         setRespostas(JSON.parse(data));
+      } else {
+        setRespostas(defaultAnswers);
       }
     } catch (e) {
       console.error(e);
+      setRespostas(defaultAnswers);
     }
     setIsLoaded(true);
   }, []);
@@ -61,6 +65,9 @@ export default function Home() {
 
   return (
     <div className="container">
+      <div className="header-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/TOTVS_logo.svg" alt="TOTVS" />
+      </div>
       <h1>Portal de Compras (MILLEN-80053) — Parte 1</h1>
       <p className="subtitle">Dúvidas de Produto e Regras de Negócio da Parte 1 (Auto-save Ativado)</p>
       
@@ -96,7 +103,7 @@ export default function Home() {
           ))}
         </div>
         <button className="btn-export" onClick={handleExport}>
-          Exportar Respostas
+          Gerar Arquivo e Enviar por E-mail
         </button>
       </div>
     </div>

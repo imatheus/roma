@@ -140,3 +140,13 @@ p.subtitle {
   background: #2471a3;
 }
 @import "easymde/dist/easymde.min.css";
+
+.header-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.header-logo img {
+  max-width: 140px;
+  height: auto;
+}
