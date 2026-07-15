@@ -130,4 +130,4 @@ export const defaultAnswersList = [
     resposta: "**Conflito para a reunião:** na aba Análise Detalhada da planilha, a classificação usa as categorias **'Problema'** e **'Saldão'**, que não constam no requisito; e produtos **com** venda no período aparecem como 'Sem Giro' quando estão há mais de ~45 dias sem vender. Ou seja, o critério da planilha parece ser **'dias sem venda'**, enquanto o requisito sugere 'sem venda no período'. Precisamos saber qual dos dois vale (e se 'Problema'/'Saldão' entram no portal)."
   }
 ];
-export const defaultAnswers = defaultAnswersList.reduce((acc, curr) => { acc[curr.id] = curr.resposta; return acc; }, {});
+export const defaultAnswers = defaultAnswersList.reduce((acc: Record<string, string>, curr) => { acc[curr.id] = curr.resposta; return acc; }, {});
